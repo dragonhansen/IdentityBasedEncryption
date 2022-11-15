@@ -4,6 +4,7 @@ import java.security.spec.ECFieldFp;
 import java.security.spec.ECPoint;
 import java.util.Random;
 import java.security.spec.EllipticCurve;
+import java.security.MessageDigest;
 
 public class Setup {
     private int k;
@@ -12,6 +13,7 @@ public class Setup {
     private BigInteger q;
     private EllipticCurve curve;
     private BigInteger s;
+    private ECPoint pub;
 
     public Setup(int k) {
         this.k = k;
@@ -26,14 +28,10 @@ public class Setup {
         do {
 
             p = new BigInteger(k, 100, rand);
-        }
-        //Check that p mod 3 = 2
-        while(!p.remainder(BigInteger.valueOf(3)).equals(BigInteger.valueOf(2)));
-        do {
             q = p.add(BigInteger.ONE).divide(BigInteger.valueOf(6));
         }
-        //Check that p=6q-1
-        while(!q.multiply(BigInteger.valueOf(6)).subtract(BigInteger.ONE).remainder(p).equals(BigInteger.ZERO));
+        //Check the that the conditions on p and q are satisfied
+        while(!p.remainder(BigInteger.valueOf(3)).equals(BigInteger.valueOf(2)) | !q.multiply(BigInteger.valueOf(6)).subtract(BigInteger.ONE).remainder(p).equals(BigInteger.ZERO) | !q.isProbablePrime(100));
     }
 
     private void generateCurve() {
@@ -49,20 +47,21 @@ public class Setup {
         while(s.compareTo(q) > -1 && !s.gcd(q).equals(BigInteger.ONE));
     }
 
+
     private void generatePublicKey() {
         //Generate a random point on the curve
         BigInteger y;
         BigInteger x;
         do{
             y = new BigInteger(q.bitLength(), 0, rand);
-            x = y.pow(2).subtract(BigInteger.ONE).pow(1/3).mod(p);
+            x = y.pow(2).subtract(BigInteger.ONE).pow(p.multiply(BigInteger.valueOf(2)).subtract(BigInteger.ONE).divide(BigInteger.valueOf(3)).intValue());
         }
-        while(y.compareTo(q) > -1);
-        if(y.pow(2).mod(p).equals(x.pow(3).add(BigInteger.ONE).mod(p))) {
-            System.out.println("Success");
-        }
-        //System.out.println("y: " + y + ", x: " + x);
+        while(y.compareTo(q) > -1 | !x.mod(BigInteger.ONE).equals(BigInteger.ZERO));
+        BigInteger xPub = x.multiply(s);
+        BigInteger yPub = y.multiply(s);
+        pub = new ECPoint(xPub, yPub);
     }
+
 
 
 
