@@ -1,3 +1,7 @@
+import org.miracl.core.BN254.BIG;
+import org.miracl.core.BN254.CONFIG_CURVE;
+import org.miracl.core.BN254.ROM;
+
 import java.math.BigInteger;
 import java.security.spec.ECField;
 import java.security.spec.ECFieldFp;
@@ -29,6 +33,7 @@ public class Setup {
 
             p = new BigInteger(k, 100, rand);
             q = p.add(BigInteger.ONE).divide(BigInteger.valueOf(6));
+            var aval = new BIG(2);
         }
         //Check the that the conditions on p and q are satisfied
         while(!p.remainder(BigInteger.valueOf(3)).equals(BigInteger.valueOf(2)) | !q.multiply(BigInteger.valueOf(6)).subtract(BigInteger.ONE).remainder(p).equals(BigInteger.ZERO) | !q.isProbablePrime(100));
