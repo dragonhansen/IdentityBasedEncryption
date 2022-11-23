@@ -6,9 +6,9 @@ import java.security.NoSuchAlgorithmException;
 import java.security.MessageDigest;
 
 public class Config {
-    private int messageLength;
-    private String ID;
-    private RAND rand;
+    private final int messageLength;
+    private final String ID;
+    private final RAND rand;
     private BIG s;
     private ECP2 P;
     private ECP2 pk;
@@ -75,9 +75,9 @@ public class Config {
         }
     }
 
-    public class CipherText {
-        private ECP2 rP;
-        private String XORVal;
+    public static class CipherText {
+        private final ECP2 rP;
+        private final String XORVal;
 
         private CipherText(ECP2 rP, String XORVal) {
             this.rP = rP;
