@@ -37,7 +37,7 @@ public class Config {
     }
 
     private void generatePrivateKey() {
-        byte[] IDByteArray = new BigInteger(ID).toByteArray();
+        byte[] IDByteArray = new BigInteger(convertToBinary(ID)).toByteArray();
         ECP QID = BLS.bls_hash_to_point(IDByteArray);
         sk = QID.mul(s);
     }
@@ -46,7 +46,7 @@ public class Config {
         String binaryMessage = convertToBinary(message);
         BIG r = BIG.random(rand);
         ECP2 rP = P.mul(r);
-        byte[] IDByteArray = new BigInteger(ID).toByteArray();
+        byte[] IDByteArray = new BigInteger(convertToBinary(ID)).toByteArray();
         ECP QID = BLS.bls_hash_to_point(IDByteArray);
         FP12 gID = PAIR.ate(pk, QID);
         FP12 gIDr = PAIR.fexp(gID).pow(r);
@@ -115,14 +115,12 @@ public class Config {
     private String convertToBinary(String message) {
         byte[] messageBytes = message.getBytes(StandardCharsets.UTF_8);
         if(messageBytes[0] == 0 && message.charAt(0) == '1') messageBytes = Arrays.copyOfRange(messageBytes, 1, messageBytes.length);
-        String binaryMessage = new BigInteger(messageBytes).toString(2);
-        return binaryMessage;
+        return new BigInteger(messageBytes).toString(2);
     }
 
     private String convertToText(String binaryMessage) {
         byte[] messageBytes = new BigInteger(binaryMessage, 2).toByteArray();
-        String message = new String(messageBytes, StandardCharsets.UTF_8);
-        return message;
+        return new String(messageBytes, StandardCharsets.UTF_8);
     }
 
 }
