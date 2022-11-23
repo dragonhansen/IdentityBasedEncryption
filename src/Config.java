@@ -1,8 +1,7 @@
-import org.miracl.core.BLS12381.*;
+import org.miracl.core.BN254.*;
 import org.miracl.core.RAND;
 
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.security.MessageDigest;
 
@@ -24,12 +23,11 @@ public class Config {
     }
 
     private void generateMasterKey() {
+        rand.sirand(3454);
+        BIG.random(rand);
         s = BIG.random(rand);
-        System.out.println(s);
     }
     private void generatePublicKey() {
-        //TODO need better randomness and maybe generate the bytearray in a better way
-        //byte[] randByteArray = new BigInteger(String.valueOf(rand.getByte())).toByteArray();
         BIG randomNumber = BIG.random(rand);
         P = ECP2.generator().mul(randomNumber);
         pk = P.mul(s);
@@ -46,13 +44,17 @@ public class Config {
         ECP2 rP = P.mul(r);
         byte[] IDByteArray = new BigInteger(ID).toByteArray();
         ECP QID = BLS.bls_hash_to_point(IDByteArray);
-        FP12 gIDr = PAIR.ate(pk, QID).pow(r);
+        FP12 gIDr = PAIR.ate(pk, QID);
+        gIDr = PAIR.fexp(gIDr).pow(r);;
+        System.out.println("Encrypt pair: " + gIDr);
         String hashVal = hashFunctionH(gIDr);
         return new CipherText(rP, XORBinaryString(hashVal, message, messageLength));
     }
 
     public String Decrypt(CipherText c) {
         FP12 pair = PAIR.ate(c.getrP(), sk);
+        pair = PAIR.fexp(pair);
+        System.out.println("Decrypt pair: " + pair);
         String hashVal = hashFunctionH(pair);
         return XORBinaryString(hashVal, c.getXORVal(), messageLength);
     }
