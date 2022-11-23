@@ -2,8 +2,10 @@ import org.miracl.core.BN254.*;
 import org.miracl.core.RAND;
 
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.security.MessageDigest;
+import java.util.Arrays;
 
 public class Config {
     private final int messageLength;
@@ -41,21 +43,23 @@ public class Config {
     }
 
     public CipherText Encrypt(String message) {
+        String binaryMessage = convertToBinary(message);
         BIG r = BIG.random(rand);
         ECP2 rP = P.mul(r);
         byte[] IDByteArray = new BigInteger(ID).toByteArray();
         ECP QID = BLS.bls_hash_to_point(IDByteArray);
-        FP12 gIDr = PAIR.ate(pk, QID);
-        gIDr = PAIR.fexp(gIDr).pow(r);
+        FP12 gID = PAIR.ate(pk, QID);
+        FP12 gIDr = PAIR.fexp(gID).pow(r);
         String hashVal = hashFunctionH(gIDr);
-        return new CipherText(rP, XORBinaryString(hashVal, message, messageLength));
+        return new CipherText(rP, XORBinaryString(hashVal, binaryMessage, messageLength));
     }
 
     public String Decrypt(CipherText c) {
         FP12 pair = PAIR.ate(c.getrP(), sk);
         pair = PAIR.fexp(pair);
         String hashVal = hashFunctionH(pair);
-        return XORBinaryString(hashVal, c.getXORVal(), messageLength);
+        String binaryMessage = XORBinaryString(hashVal, c.getXORVal(), messageLength);
+        return convertToText(binaryMessage);
     }
 
     private String hashFunctionH(FP12 input) {
@@ -108,5 +112,17 @@ public class Config {
         return ans;
     }
 
+    private String convertToBinary(String message) {
+        byte[] messageBytes = message.getBytes(StandardCharsets.UTF_8);
+        if(messageBytes[0] == 0 && message.charAt(0) == '1') messageBytes = Arrays.copyOfRange(messageBytes, 1, messageBytes.length);
+        String binaryMessage = new BigInteger(messageBytes).toString(2);
+        return binaryMessage;
+    }
+
+    private String convertToText(String binaryMessage) {
+        byte[] messageBytes = new BigInteger(binaryMessage, 2).toByteArray();
+        String message = new String(messageBytes, StandardCharsets.UTF_8);
+        return message;
+    }
 
 }
