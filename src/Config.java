@@ -24,6 +24,7 @@ public class Config {
 
     private void generateMasterKey() {
         rand.sirand(3454);
+        //for some reason s becomes 0 if this extra call is not made
         BIG.random(rand);
         s = BIG.random(rand);
     }
@@ -45,8 +46,7 @@ public class Config {
         byte[] IDByteArray = new BigInteger(ID).toByteArray();
         ECP QID = BLS.bls_hash_to_point(IDByteArray);
         FP12 gIDr = PAIR.ate(pk, QID);
-        gIDr = PAIR.fexp(gIDr).pow(r);;
-        System.out.println("Encrypt pair: " + gIDr);
+        gIDr = PAIR.fexp(gIDr).pow(r);
         String hashVal = hashFunctionH(gIDr);
         return new CipherText(rP, XORBinaryString(hashVal, message, messageLength));
     }
@@ -54,7 +54,6 @@ public class Config {
     public String Decrypt(CipherText c) {
         FP12 pair = PAIR.ate(c.getrP(), sk);
         pair = PAIR.fexp(pair);
-        System.out.println("Decrypt pair: " + pair);
         String hashVal = hashFunctionH(pair);
         return XORBinaryString(hashVal, c.getXORVal(), messageLength);
     }
@@ -108,4 +107,6 @@ public class Config {
         }
         return ans;
     }
+
+
 }
