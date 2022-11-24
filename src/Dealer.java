@@ -1,11 +1,8 @@
 import org.miracl.core.BN254.*;
 import org.miracl.core.RAND;
-
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.security.MessageDigest;
-import java.util.Arrays;
 
 public class Dealer {
     private final String ID;

@@ -1,5 +1,4 @@
 import org.miracl.core.BN254.ECP2;
-
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;

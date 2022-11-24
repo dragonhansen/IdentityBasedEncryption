@@ -1,6 +1,5 @@
 import org.miracl.core.BN254.*;
 import org.miracl.core.RAND;
-
 import java.math.BigInteger;
 
 public class Encrypter {
@@ -13,6 +12,7 @@ public class Encrypter {
 
     public Util.CipherText encrypt(String message, String ID, ECP2 P, ECP2 pk) {
         String binaryMessage = Util.convertToBinary(message);
+        //for some reason r becomes 0 if this extra call is not made
         BIG.random(rand);
         BIG r = BIG.random(rand);
         ECP2 rP = P.mul(r);
