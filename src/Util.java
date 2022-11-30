@@ -32,21 +32,59 @@ public class Util {
         return new String(messageBytes, StandardCharsets.UTF_8);
     }
 
+    static int findRandom()
+    {
+
+        // Generate the random number
+        int num = (1 + (int)(Math.random() * 100)) % 2;
+
+        // Return the generated number
+        return num;
+    }
+
+    // Function to generate a random
+    // binary string of length N
+    static String generateBinaryString(int N)
+    {
+
+        // Stores the empty string
+        String S = "";
+
+        // Iterate over the range [0, N - 1]
+        for(int i = 0; i < N; i++)
+        {
+
+            // Store the random number
+            int x = findRandom();
+
+            // Append it to the string
+            S = S + String.valueOf(x);
+        }
+
+        return S;
+    }
+
     public static class CipherText {
         private final ECP2 rP;
-        private final String XORVal;
+        private final String randomString;
+        private final String messageString;
 
-        CipherText(ECP2 rP, String XORVal) {
+        CipherText(ECP2 rP, String randomString, String messageString) {
             this.rP = rP;
-            this.XORVal = XORVal;
+            this.randomString = randomString;
+            this.messageString = messageString;
         }
 
         public ECP2 getrP() {
             return rP;
         }
 
-        public String getXORVal() {
-            return XORVal;
+        public String getRandomString() {
+            return randomString;
+        }
+
+        public String getMessageString() {
+            return messageString;
         }
     }
 }

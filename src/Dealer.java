@@ -36,11 +36,38 @@ public class Dealer {
         ECP QID = BLS.bls_hash_to_point(IDByteArray);
         sk = QID.mul(s);
     }
-    public static String hashFunctionH(FP12 input, int messageLength) {
+    public static String hashFunctionH2(FP12 input, int messageLength) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-512");
             byte[] inputBytes = input.toString().getBytes();
             byte[] byteHashVal = digest.digest(inputBytes);
+            BigInteger hashNumber = new BigInteger(1, byteHashVal);
+            StringBuilder binaryString = new StringBuilder(hashNumber.toString(2));
+            return binaryString.substring(0, messageLength);
+        }
+        catch (NoSuchAlgorithmException e){
+            System.out.println("NO SHA-512");
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static BIG hashFunctionH3(String randString, String message) {
+        try {
+            String input = randString + message;
+            MessageDigest digest = MessageDigest.getInstance("SHA-512");
+            byte[] byteHashVal = digest.digest(input.getBytes());
+            return BIG.fromBytes(byteHashVal);
+        }
+        catch (NoSuchAlgorithmException e){
+            System.out.println("NO SHA-512");
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String hashFunctionH4(String randString, int messageLength) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-512");
+            byte[] byteHashVal = digest.digest(randString.getBytes());
             BigInteger hashNumber = new BigInteger(1, byteHashVal);
             StringBuilder binaryString = new StringBuilder(hashNumber.toString(2));
             return binaryString.substring(0, messageLength);
