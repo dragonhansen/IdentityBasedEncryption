@@ -43,8 +43,7 @@ public class Dealer {
             byte[] byteHashVal = digest.digest(inputBytes);
             BigInteger hashNumber = new BigInteger(1, byteHashVal);
             StringBuilder binaryString = new StringBuilder(hashNumber.toString(2));
-            String outputHash = binaryString.substring(0, messageLength);
-            return outputHash;
+            return binaryString.substring(0, messageLength);
         }
         catch (NoSuchAlgorithmException e){
             System.out.println("NO SHA-512");
