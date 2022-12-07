@@ -16,8 +16,8 @@ public class Encrypter {
 
     public Util.CipherText encrypt(String message, String ID, ECP2 P, ECP2 pk) {
         String binaryMessage = Util.convertToBinary(message);
-        String sigma = Util.generateBinaryString(message.length()*8-1);
         int messageLength = message.length()*8-1;
+        String sigma = Util.generateBinaryString(messageLength);
         BIG r = Dealer.hashFunctionH3(sigma, binaryMessage);
         ECP2 rP = P.mul(r);
         byte[] IDByteArray = new BigInteger(Util.convertToBinary(ID)).toByteArray();
