@@ -2,7 +2,6 @@ import org.miracl.core.BN254.*;
 import org.miracl.core.RAND;
 import java.math.BigInteger;
 import java.util.Random;
-import java.util.UUID;
 
 public class Encrypter {
 
