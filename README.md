@@ -1,0 +1,1 @@
+Our test program can be run by executing Main.java in the src directory. The program relies on the "core-4.0-SNAPSHOT.jar" file which is located in the lib folder. With the IntelliJ IDE, it should run straight out of the box but depending on your IDE, this may not be the case and you may need to configure the jar file as a library.
